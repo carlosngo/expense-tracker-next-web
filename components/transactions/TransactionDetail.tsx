@@ -1,20 +1,38 @@
 import {Transaction} from "../../interfaces/transaction";
-import {TransactionForm} from "./TransactionForm";
 import {toReadableDateString} from "../../util/date";
 import {Card, Divider, SimpleGrid, Grid, Text, Group, Button} from "@mantine/core";
 import TransactionAmount from "./TransactionAmount";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
+import {useModals} from "@mantine/modals";
 
 interface Props {
-    transaction: Transaction
+    transaction: Transaction,
+    handleDelete: () => void,
 }
 
+const TransactionDetail = ({transaction, handleDelete}: Props) => {
+    const transactionType = transaction.amount < 0 ? 'transaction' : 'Revenue';
 
+    const modals = useModals();
 
-const TransactionDetail = ({transaction}: Props) => {
-    const transactionType = transaction.amount < 0 ? 'Expense' : 'Revenue';
+    const openDeleteModal = () =>
+        modals.openConfirmModal({
+            title: `Delete transaction "${transaction.description}"`,
+            centered: true,
+            children: (
+                <Text size="sm">
+                    Are you sure you want to delete this transaction? This action is destructive and you will have
+                    to contact support to restore your data.
+                </Text>
+            ),
+            labels: { confirm: 'Delete transaction', cancel: "No don't delete it" },
+            confirmProps: { color: 'red' },
+            onCancel: () => {},
+            onConfirm: handleDelete,
+        });
+
     if (transaction.id === undefined) return (
         <div>No such transaction</div>
     );
@@ -27,7 +45,7 @@ const TransactionDetail = ({transaction}: Props) => {
                         <Link href={`/expenses/update/${transaction.id}`} passHref>
                             <Button component='a' leftIcon={<FontAwesomeIcon icon={faPenToSquare} />} size='xs'>Update</Button>
                         </Link>
-                        <Button leftIcon={<FontAwesomeIcon icon={faTrashCan} />} size='xs' color='red'>Delete</Button>
+                        <Button onClick={openDeleteModal} leftIcon={<FontAwesomeIcon icon={faTrashCan} />} size='xs' color='red'>Delete</Button>
                     </Group>
                 </Group>
                 <Divider size='sm' my='sm' />

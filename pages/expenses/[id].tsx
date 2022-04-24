@@ -8,6 +8,8 @@ import {Group, LoadingOverlay, Space, Title, Text} from "@mantine/core";
 import TransactionDetail from "../../components/transactions/TransactionDetail";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightLeft} from '@fortawesome/free-solid-svg-icons'
+import {useModals} from "@mantine/modals";
+import {showNotification} from "@mantine/notifications";
 
 interface Props {
     id: string
@@ -15,6 +17,7 @@ interface Props {
 
 const TransactionPage = ({ id }: Props) => {
     const [expense, setExpense] = useState({} as Transaction);
+    const [isLoading, setLoading] = useState(true);
 
     const router = useRouter()
 
@@ -25,7 +28,21 @@ const TransactionPage = ({ id }: Props) => {
     const getExpense = async () => {
         try {
             setExpense(await db.transactions.where('id').equals(Number(id)).first() ?? {} as Transaction);
+            setLoading(false);
         } catch {}
+    }
+
+    const handleDelete = async() => {
+        setLoading(true);
+        try {
+            if (expense.id === undefined) throw "Transaction ID not defined"
+            await db.transactions.delete(expense.id);
+            router.back();
+        } catch(e) {
+            showNotification({autoClose: 5000, color: 'red', title: 'Error', message: 'Something went wrong.'});
+            console.log(e);
+        }
+        setLoading(false);
     }
 
     const actualComponent = (
@@ -38,14 +55,14 @@ const TransactionPage = ({ id }: Props) => {
                 <Text weight={300}>Expense: &quot;{expense.description}&quot;</Text>
             </Group>
             <Space h='md' />
-            <TransactionDetail transaction={expense}/>
+            <TransactionDetail transaction={expense} handleDelete={handleDelete}/>
         </>
     );
 
     return (
         <Layout>
-            <LoadingOverlay visible={router.isFallback} />
-            {!router.isFallback && actualComponent}
+            <LoadingOverlay visible={router.isFallback && isLoading} />
+            {!router.isFallback && !isLoading && actualComponent}
         </Layout>
     );
 }

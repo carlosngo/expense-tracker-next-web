@@ -16,6 +16,7 @@ interface Props {
 
 const UpdateExpensePage = ({ id }: Props) => {
     const [transaction, setTransaction] = useState({} as Transaction);
+    const [isLoading, setLoading] = useState(true);
 
     const router = useRouter()
 
@@ -26,13 +27,8 @@ const UpdateExpensePage = ({ id }: Props) => {
     const getTransaction = async () => {
         try {
             setTransaction(await db.transactions.where('id').equals(Number(id)).first() ?? {} as Transaction);
+            setLoading(false);
         } catch {}
-    }
-
-    const initialValues: TransactionFormFields = {
-        transactionDescription: transaction.description,
-        transactionAmount: transaction.amount,
-        transactionDate: transaction.transactionDate,
     }
 
     const handleSubmit = async (values: TransactionFormFields) => {
@@ -47,9 +43,14 @@ const UpdateExpensePage = ({ id }: Props) => {
 
     return (
         <Layout>
-            <LoadingOverlay visible={router.isFallback} />
-            {!router.isFallback && <TransactionForm editMode='update' transactionType='withdrawal'
-                                                    initialValues={initialValues} handleSubmit={handleSubmit}/>}
+            <LoadingOverlay visible={router.isFallback && isLoading} />
+            {!router.isFallback && !isLoading &&
+                <TransactionForm editMode='update' transactionType='withdrawal' handleSubmit={handleSubmit}
+                                 initialValues={{
+                                    transactionDescription: transaction.description,
+                                    transactionAmount: -transaction.amount,
+                                    transactionDate: transaction.transactionDate,
+                                }}/>}
         </Layout>
     );
 }
