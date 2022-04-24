@@ -6,7 +6,9 @@ import {Transaction} from "../interfaces/transaction";
 import {useEffect, useState} from "react";
 import Layout from "../components/Layout";
 import TransactionTable from "../components/transactions/TransactionTable";
-import {Container, LoadingOverlay, Title} from "@mantine/core";
+import {Card, Text, Grid, LoadingOverlay, Space, Title, Divider, Container} from "@mantine/core";
+import RunningTotalExpensesOfTheMonth from "../components/graphs/RunningTotalExpensesOfTheMonth";
+import {db} from "../util/db";
 
 const Home: NextPage = () => {
   let [expensesList, setExpensesList] = useState([] as Transaction[]);
@@ -15,21 +17,46 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     populateData();
-    setLoading(false);
   }, []);
 
-  const populateData = () => {
-    if (localStorage.transactions === undefined) return;
-    const transactionsArr: Transaction[] = JSON.parse(localStorage.transactions);
-    setExpensesList(transactionsArr);
+  const populateData = async () => {
+    const expenses = await db.transactions.where('amount').below(0).toArray()
+    setExpensesList(expenses);
+    setLoading(false);
   };
 
   return (
     <Layout title="Dashboard">
       <Title order={3}>Dashboard</Title>
-      <Container>
-        <LoadingOverlay visible={isLoading} />
-      </Container>
+      <Space h='xl' />
+      <Grid>
+        <Grid.Col span={8}>
+          <Card>
+            <Text size='lg'>Your Total Expenses Throughout the Month</Text>
+            <Divider size='sm' my='sm' />
+            <Container fluid style={{position: 'relative', height: '500px'}} mt='xl'>
+              <RunningTotalExpensesOfTheMonth isDataReady={!isLoading} expenses={expensesList}/>
+            </Container>
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Card style={{position: 'relative'}}>
+            <LoadingOverlay visible={isLoading} />
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={8}>
+          <Card style={{position: 'relative'}}>
+            <LoadingOverlay visible={isLoading} />
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Card style={{position: 'relative'}}>
+            <LoadingOverlay visible={isLoading} />
+          </Card>
+        </Grid.Col>
+      </Grid>
+
+
     </Layout>
   )
 }
