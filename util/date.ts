@@ -10,6 +10,10 @@ export function getStartAndEndDateOfMonth(year: number, month: number): {startDa
     return {startDate: d.startOf('month').toDate(), endDate: d.endOf('month').toDate()}
 }
 
+export function areTwoDatesEqualInYearAndMonth(a: Date, b: Date): boolean {
+    return a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+}
+
 export function areTwoDatesEqualWithoutTimestamp(a: Date, b: Date): boolean {
-    return a.getDate() === b.getDate() && a.getMonth() === b.getMonth() && a.getFullYear() === b.getFullYear();
+    return a.getDate() === b.getDate() && areTwoDatesEqualInYearAndMonth(a, b);
 }

@@ -1,14 +1,14 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import {Transaction} from "../interfaces/transaction";
 import {useEffect, useState} from "react";
 import Layout from "../components/Layout";
-import TransactionTable from "../components/transactions/TransactionTable";
-import {Card, Text, Grid, LoadingOverlay, Space, Title, Divider, Container} from "@mantine/core";
+import {Card, Text, Grid, Button, Space, Title, Divider, Container, Stack} from "@mantine/core";
 import RunningTotalExpensesOfTheMonth from "../components/graphs/RunningTotalExpensesOfTheMonth";
 import {db} from "../util/db";
+import TotalExpensesOfTheMonth from "../components/graphs/TotalExpensesOfTheMonth";
+import TotalExpensesForAllTime from "../components/graphs/TotalExpensesForAllTime";
+import Link from "next/link";
+import MostExpensiveExpensesOfTheMonth from "../components/graphs/MostExpensiveExpensesOfTheMonth";
 
 const Home: NextPage = () => {
   let [expensesList, setExpensesList] = useState([] as Transaction[]);
@@ -37,22 +37,30 @@ const Home: NextPage = () => {
             <Container fluid style={{position: 'relative', height: '500px'}} mt='xl'>
               <RunningTotalExpensesOfTheMonth isDataReady={!isLoading} expenses={expensesList}/>
             </Container>
+            <Divider size='xs' my='sm' />
+            <Link href='/expenses' passHref>
+              <Button component='a' variant='light'>View your expenses</Button>
+            </Link>
           </Card>
         </Grid.Col>
         <Grid.Col span={4}>
-          <Card style={{position: 'relative'}}>
-            <LoadingOverlay visible={isLoading} />
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={8}>
-          <Card style={{position: 'relative'}}>
-            <LoadingOverlay visible={isLoading} />
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Card style={{position: 'relative'}}>
-            <LoadingOverlay visible={isLoading} />
-          </Card>
+          <Stack>
+            <Card style={{position: 'relative'}}>
+              <Text size='lg'>Your Total Expenses for the Month</Text>
+              <Divider size='sm' my='sm' />
+              <TotalExpensesOfTheMonth isDataReady={!isLoading} expenses={expensesList} />
+            </Card>
+            <Card style={{position: 'relative'}}>
+              <Text size='lg'>Your Total Expenses for all time</Text>
+              <Divider size='sm' my='sm' />
+              <TotalExpensesForAllTime isDataReady={!isLoading} expenses={expensesList} />
+            </Card>
+            <Card>
+              <Text size='lg'>Your 5 Most Expensive Expenses for the Month</Text>
+              <Divider size='sm' my='sm' />
+              <MostExpensiveExpensesOfTheMonth isDataReady={!isLoading} expenses={expensesList} />
+            </Card>
+          </Stack>
         </Grid.Col>
       </Grid>
 

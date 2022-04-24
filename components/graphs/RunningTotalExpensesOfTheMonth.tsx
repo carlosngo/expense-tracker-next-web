@@ -2,7 +2,6 @@ import { Transaction } from "../../interfaces/transaction";
 import {LoadingOverlay} from "@mantine/core";
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {useEffect, useState} from "react";
-import {db} from "../../util/db";
 import {areTwoDatesEqualWithoutTimestamp, getStartAndEndDateOfMonth} from "../../util/date";
 import dayjs from "dayjs";
 import {toSgdCurrencyString} from "../../util/currency";
