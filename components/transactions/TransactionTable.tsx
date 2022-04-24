@@ -1,9 +1,10 @@
-import {Anchor, Text, Table, Card} from "@mantine/core";
+import {Anchor, Center, Table} from "@mantine/core";
 import Link from "next/link";
 import {Transaction} from "../../interfaces/transaction";
 import {toSgdCurrencyString} from "../../util/currency";
 import {toReadableDateString} from "../../util/date";
 import TransactionAmount from "./TransactionAmount";
+import NoDataAvailable from "../NoDataAvailable";
 
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const TransactionTable = ({data, isLoading}: Props) => {
+
     const tableHeaders = (
         <tr>
             <th>Description</th>
@@ -38,12 +40,13 @@ const TransactionTable = ({data, isLoading}: Props) => {
     const tableHeader = <thead>{tableHeaders}</thead>
     const tableBody = <tbody>{tableRows}</tbody>
     return (
-        <Card shadow='sm'>
+        <>
             <Table highlightOnHover>
                 {tableHeader}
                 {tableBody}
             </Table>
-        </Card>
+            {data.length === 0 && <NoDataAvailable url='/expenses/create'/>}
+        </>
     );
 }
 

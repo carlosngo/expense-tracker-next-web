@@ -6,7 +6,7 @@ import {Transaction} from "../../interfaces/transaction";
 import {useEffect, useState} from "react";
 import Layout from "../../components/Layout";
 import TransactionTable from "../../components/transactions/TransactionTable";
-import {Container, LoadingOverlay, Space, Title} from "@mantine/core";
+import {Card, Container, LoadingOverlay, Space, Title} from "@mantine/core";
 import {db} from "../../util/db";
 
 const Expenses: NextPage = () => {
@@ -28,7 +28,9 @@ const Expenses: NextPage = () => {
         <Layout title="Expenses">
             <Title order={3}>Expenses</Title>
             <Space h='lg' />
-            <TransactionTable data={expensesList} isLoading={isLoading} />
+            <Card shadow='sm'>
+                <TransactionTable data={expensesList} isLoading={isLoading} />
+            </Card>
         </Layout>
     )
 }

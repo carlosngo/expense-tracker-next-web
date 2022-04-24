@@ -13,7 +13,7 @@ interface Props {
 }
 
 const TransactionDetail = ({transaction, handleDelete}: Props) => {
-    const transactionType = transaction.amount < 0 ? 'transaction' : 'Revenue';
+    const transactionType = transaction.amount < 0 ? 'Expense' : 'Revenue';
 
     const modals = useModals();
 

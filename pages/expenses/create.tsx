@@ -15,7 +15,7 @@ const CreateWithdrawalPage = () => {
 
     return (
         <Layout>
-            <TransactionForm editMode="create" handleSubmit={handleSubmit} transactionType="withdrawal"/>
+            <TransactionForm editMode="create" handleSubmit={handleSubmit} transactionType="expense"/>
         </Layout>
     )
 }

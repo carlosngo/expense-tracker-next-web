@@ -45,7 +45,7 @@ const UpdateExpensePage = ({ id }: Props) => {
         <Layout>
             <LoadingOverlay visible={router.isFallback && isLoading} />
             {!router.isFallback && !isLoading &&
-                <TransactionForm editMode='update' transactionType='withdrawal' handleSubmit={handleSubmit}
+                <TransactionForm editMode='update' transactionType='expense' handleSubmit={handleSubmit}
                                  initialValues={{
                                     transactionDescription: transaction.description,
                                     transactionAmount: -transaction.amount,

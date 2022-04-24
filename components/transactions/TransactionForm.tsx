@@ -18,7 +18,7 @@ import Joi from 'joi';
 
 interface Props {
     editMode: 'create' | 'update';
-    transactionType: 'withdrawal' | 'deposit';
+    transactionType: 'expense' | 'deposit';
     initialValues?: TransactionFormFields;
     handleSubmit: (values: TransactionFormFields) => void;
 }
